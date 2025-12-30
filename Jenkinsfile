@@ -81,6 +81,20 @@ pipeline {
                         echo "Deployment directory not found!"
                         exit 1
                     fi
+                    
+                    echo ""
+                    echo "Verifying deployment..."
+                    echo "Checking if app.py exists:"
+                    test -f ${DEPLOY_DIR}/app.py && echo "✓ app.py found" || echo "✗ app.py missing"
+                    
+                    echo "Checking if requirements.txt exists:"
+                    test -f ${DEPLOY_DIR}/requirements.txt && echo "✓ requirements.txt found" || echo "✗ requirements.txt missing"
+                    
+                    echo "Checking if tests directory exists:"
+                    test -d ${DEPLOY_DIR}/tests && echo "✓ tests directory found" || echo "✗ tests directory missing"
+                    
+                    echo "File count in deploy directory:"
+                    ls -1 ${DEPLOY_DIR} | wc -l
                 '''
             }
         }
