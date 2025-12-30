@@ -7,6 +7,18 @@ pipeline {
     }
     
     stages {
+        stage('Clean') {
+            steps {
+                echo 'Cleaning workspace...'
+                sh '''
+                    rm -rf venv/
+                    rm -rf ${DEPLOY_DIR}/
+                    rm -f test-results.xml
+                    echo "Workspace cleaned"
+                '''
+            }
+        }
+        
         stage('Checkout') {
             steps {
                 echo 'Checking out repository...'
@@ -31,6 +43,10 @@ pipeline {
                 echo 'Running pytest tests...'
                 sh '''
                     source venv/bin/activate || . venv/bin/activate
+                    
+                    # Fix: Tell Python to look in the current folder (.) for app.py
+                    export PYTHONPATH=.
+                    
                     pytest tests/ -v --junitxml=test-results.xml
                 '''
             }
